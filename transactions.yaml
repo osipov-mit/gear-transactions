@@ -1,0 +1,170 @@
+ws: 'ws://127.0.0.1:9944'
+
+transfer:
+  - from: alice
+    to: charlie
+    value: 100000000000000
+
+programs:
+  - id: 1
+    name: NFT
+    pathToOpt: ./nft.opt.wasm
+    pathToMeta: ./nft.meta.wasm
+    seed: alice
+    initPayload:
+      name: 'NFTContract'
+      symbol: 'NFT'
+      baseUri: 'http://'
+      royalties: null
+
+  - id: 2
+    name: NFT_MARKETPLACE
+    pathToOpt: ./nft_marketplace.opt.wasm
+    pathToMeta: ./nft_marketplace.meta.wasm
+    seed: alice
+    initPayload:
+      ownerId: '0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d'
+      treasuryId: '0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d'
+      treasuryFee: 5
+
+messages:
+  - destination: 1
+    id: 0
+    seed: alice
+    payload:
+      mint:
+        tokenMetadata:
+          name: 'CryptoKitty'
+          description: 'Description'
+          media: 'http://'
+          reference: 'http://'
+
+  - destination: 1
+    id: 1
+    seed: alice
+    payload:
+      mint:
+        tokenMetadata:
+          name: 'CryptoKitty2'
+          description: 'Description'
+          media: 'http://'
+          reference: 'http://'
+
+  - destination: 1
+    id: 2
+    seed: alice
+    payload:
+      mint:
+        tokenMetadata:
+          name: 'CryptoKitty3'
+          description: 'Description'
+          media: 'http://'
+          reference: 'http://'
+
+  - destination: 1
+    id: 3
+    seed: alice
+    payload:
+      transfer:
+        to: '0x8eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a48'
+        tokenId: 1
+
+  - destination: 1
+    id: 4
+    seed: alice
+    payload:
+      transfer:
+        to: '0x8eaf04151687736326c9fea17e25fc5287613693c912909cb226aa4794f26a48'
+        tokenId: 2
+
+  - destination: 1
+    id: 5
+    seed: bob
+    payload:
+      burn:
+        tokenId: 2
+
+  - destination: 2
+    id: 6
+    seed: alice
+    setAddress: program_1
+    payload:
+      addNftContract: program_1
+
+  - destination: 2
+    id: 7
+    seed: alice
+    setAddress: program_1
+    payload:
+      addFtContract: program_1
+
+  - destination: 2
+    id: 8
+    seed: alice
+    setAddress: program_1
+    payload:
+      AddMarketData:
+        nftContractId: program_1
+        ftContract_id: null
+        tokenId: 0
+        price: 100000
+
+  - destination: 2
+    id: 9
+    seed: bob
+    setAddress: program_1
+    gasLimit: 200000000000
+    payload:
+      buyItem:
+        nftContractId: program_1
+        tokenId: 0
+    value: 100000
+
+  - destination: 2
+    id: 10
+    seed: bob
+    setAddress: program_1
+    payload:
+      createAuction:
+        nftContractId: program_1
+        tokenId: 1
+        ftContractId: null
+        minPrice: 100000
+        bidPeriod: 60000
+        duration: 600000
+
+  - destination: 2
+    id: 11
+    seed: alice
+    setAddress: program_1
+    gasLimit: 200000000000
+    payload:
+      addBid:
+        nftContractId: program_1
+        tokenId: 1
+        price: 200000
+    value: 200000
+
+  - destination: 2
+    id: 12
+    seed: bob
+    setAddress: program_1
+    panic: true
+    gasLimit: 200000000000
+    payload:
+      settleAuction:
+        nftContractId: program_1
+        tokenId: 1
+
+  - destination: 2
+    id: 13
+    seed: charlie
+    setAddress: program_1
+    gasLimit: 200000000000
+    payload:
+      addOffer:
+        nftContractId: program_1
+        ftContractId: null
+        tokenId: 0
+        price: 1000000
+    value: 1000000
